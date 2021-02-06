@@ -67,6 +67,7 @@ var
   var
     Order: Integer;
     f1:Boolean;
+    lastInt:integer;
     function CombineString: String;
     begin
       Result := Parser.TokenWideString;
@@ -114,7 +115,7 @@ var
                 TokenStr := Parser.TokenString;
                 case Parser.Token of
                   toInteger: begin end;
-                  System.Classes.toString,toWString: TokenStr := '#' + IntToStr(Ord(TokenStr.Chars[0]));
+                   System.Classes.toString,toWString: TokenStr := AnsiString('#' + IntToStr(Ord(TokenStr[1])));
                 else
                   Parser.CheckToken(toSymbol);
                 end;
@@ -136,8 +137,18 @@ var
             f1 := false;
             while Parser.Token <> ')' do begin
               if f1  then
-                 sb.Append('+ ''\n'' + ');
+              begin
+                 sb.Remove(sb.Length -1 , 1);
+                 sb.Append('\n');
+              end;
+              lastInt := sb.Length;
+
                ConvertValue;
+               if f1 then
+               begin
+                  sb.Remove(lastInt, 1);
+               end;
+
                f1 := true;
             end;
           end;
@@ -245,6 +256,7 @@ begin
     Parser.Free;
   end;
 end;
+
 
 
 
